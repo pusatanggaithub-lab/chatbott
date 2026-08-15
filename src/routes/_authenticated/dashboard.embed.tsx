@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/embed")({
   component: EmbedPage,
 });
 
-const WIDGET_SRC = "https://testing-theta-gold.vercel.app/widget.js";
+const WIDGET_SRC = "https://chattbott-lilac.vercel.app/widget.js";
 
 function EmbedPage() {
   const profile = useProfile();

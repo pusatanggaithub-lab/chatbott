@@ -1,11 +1,5 @@
 {
-  "headers": [
-    {
-      "source": "/widget.js",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Content-Type", "value": "application/javascript" }
-      ]
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output",
+  "framework": null
 }

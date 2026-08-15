@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChatDesk — Admin Chatbot FAQ</title>
+<meta name="description" content="Dashboard admin chatbot FAQ multi-tenant: kelola FAQ, log pertanyaan, kustomisasi widget, dan embed script." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { teal: { DEFAULT: "#0F8A78", dark: "#0B6B5D", light: "#E6F3F1" } },
+      fontFamily: { sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"] },
+    } },
+  };
+</script>
+<style>body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}.hide{display:none}</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<!-- ============ LANDING ============ -->
+<section id="view-landing">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+    <div class="flex items-center gap-2 text-lg font-extrabold">
+      <span class="grid h-9 w-9 place-items-center rounded-xl bg-teal text-white">CD</span> ChatDesk
+    </div>
+    <button data-go="auth" class="rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-white hover:bg-teal-dark">Masuk</button>
+  </header>
+  <main class="mx-auto max-w-3xl px-6 py-16 text-center">
+    <h1 class="text-4xl font-extrabold sm:text-5xl">Jawab pertanyaan pengunjung website Anda, otomatis 24/7</h1>
+    <p class="mx-auto mt-5 max-w-xl text-slate-600">Kelola FAQ, pantau pertanyaan tak terjawab, kustomisasi widget, lalu pasang satu baris script.</p>
+    <button data-go="auth" class="mt-8 rounded-xl bg-teal px-6 py-3 font-semibold text-white hover:bg-teal-dark">Mulai Gratis</button>
+  </main>
+</section>
+
+<!-- ============ AUTH ============ -->
+<section id="view-auth" class="hide min-h-screen place-items-center px-4 py-16">
+  <div class="w-full max-w-md rounded-2xl border bg-white p-6 shadow-sm">
+    <h2 class="mb-1 text-xl font-extrabold">Masuk / Daftar</h2>
+    <p class="mb-5 text-sm text-slate-500">Gunakan email dan password Anda.</p>
+    <form id="authForm" class="space-y-3">
+      <input id="email" type="email" required placeholder="nama@perusahaan.com" class="w-full rounded-lg border px-3 py-2 outline-none focus:border-teal" />
+      <input id="password" type="password" required minlength="6" placeholder="••••••" class="w-full rounded-lg border px-3 py-2 outline-none focus:border-teal" />
+      <div class="flex gap-2">
+        <button id="btnLogin" class="flex-1 rounded-lg bg-teal px-4 py-2 font-semibold text-white hover:bg-teal-dark">Masuk</button>
+        <button id="btnRegister" type="button" class="flex-1 rounded-lg border px-4 py-2 font-semibold hover:bg-slate-50">Daftar</button>
+      </div>
+    </form>
+    <button data-go="landing" class="mt-4 text-sm text-slate-500 hover:underline">← Kembali</button>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<section id="view-dash" class="hide">
+  <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 lg:flex-row">
+    <aside class="lg:w-60 lg:shrink-0">
+      <div class="rounded-2xl border bg-white p-4">
+        <div class="mb-4 flex items-center gap-2 font-extrabold"><span class="grid h-8 w-8 place-items-center rounded-lg bg-teal text-sm text-white">CD</span> ChatDesk</div>
+        <nav id="nav" class="flex flex-col gap-1 text-sm font-medium">
+          <button data-tab="faq" class="rounded-lg px-3 py-2 text-left hover:bg-slate-100">Kelola FAQ</button>
+          <button data-tab="logs" class="rounded-lg px-3 py-2 text-left hover:bg-slate-100">Unanswered Logs</button>
+          <button data-tab="widget" class="rounded-lg px-3 py-2 text-left hover:bg-slate-100">Kustomisasi Widget</button>
+          <button data-tab="embed" class="rounded-lg px-3 py-2 text-left hover:bg-slate-100">Embed Script</button>
+        </nav>
+        <button id="btnLogout" class="mt-4 w-full rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50">Keluar</button>
+      </div>
+    </aside>
+
+    <main class="min-w-0 flex-1 space-y-4">
+      <!-- FAQ -->
+      <div id="tab-faq" class="space-y-4">
+        <div class="rounded-2xl border bg-white p-5">
+          <h3 class="mb-3 font-bold">Tambah / Edit FAQ</h3>
+          <form id="faqForm" class="grid gap-3 sm:grid-cols-2">
+            <input type="hidden" id="faqId" />
+            <input id="faqKategori" placeholder="Kategori" class="rounded-lg border px-3 py-2" />
+            <input id="faqKeywords" placeholder="Keywords (pisah koma)" class="rounded-lg border px-3 py-2" />
+            <textarea id="faqJawaban" required placeholder="Jawaban bot" rows="3" class="rounded-lg border px-3 py-2 sm:col-span-2"></textarea>
+            <div class="flex gap-2 sm:col-span-2">
+              <button class="rounded-lg bg-teal px-4 py-2 font-semibold text-white hover:bg-teal-dark">Simpan</button>
+              <button type="button" id="faqReset" class="rounded-lg border px-4 py-2 font-semibold">Reset</button>
+            </div>
+          </form>
+        </div>
+        <div id="faqList" class="space-y-2"></div>
+      </div>
+
+      <!-- LOGS -->
+      <div id="tab-logs" class="hide space-y-2"></div>
+
+      <!-- WIDGET -->
+      <div id="tab-widget" class="hide grid gap-4 lg:grid-cols-2">
+        <form id="widgetForm" class="space-y-3 rounded-2xl border bg-white p-5">
+          <h3 class="font-bold">Kustomisasi Widget</h3>
+          <label class="block text-sm font-medium">Nama Bot<input id="wBot" class="mt-1 w-full rounded-lg border px-3 py-2" /></label>
+          <label class="block text-sm font-medium">Welcome Message<textarea id="wWelcome" rows="2" class="mt-1 w-full rounded-lg border px-3 py-2"></textarea></label>
+          <label class="block text-sm font-medium">Warna Utama<input id="wColor" type="color" class="mt-1 h-10 w-20 rounded border" /></label>
+          <label class="block text-sm font-medium">Ikon
+            <select id="wIcon" class="mt-1 w-full rounded-lg border px-3 py-2">
+              <option value="chat">Chat</option><option value="bot">Bot</option><option value="help">Help</option>
+            </select>
+          </label>
+          <button class="rounded-lg bg-teal px-4 py-2 font-semibold text-white hover:bg-teal-dark">Simpan</button>
+        </form>
+        <div class="rounded-2xl border bg-white p-5">
+          <h3 class="mb-3 font-bold">Live Preview</h3>
+          <div class="overflow-hidden rounded-xl border">
+            <div id="pvHeader" class="px-4 py-3 font-bold text-white">Asisten AI</div>
+            <div class="space-y-2 bg-slate-100 p-4">
+              <div id="pvWelcome" class="w-fit max-w-[80%] rounded-xl bg-white px-3 py-2 text-sm shadow-sm">Halo!</div>
+              <div id="pvUser" class="ml-auto w-fit rounded-xl px-3 py-2 text-sm text-white">Jam buka?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMBED -->
+      <div id="tab-embed" class="hide rounded-2xl border bg-white p-5">
+        <h3 class="mb-3 font-bold">Embed Script</h3>
+        <p class="text-sm text-slate-500">API Key Anda</p>
+        <code id="apiKey" class="mt-1 block break-all rounded-lg bg-slate-100 p-3 text-sm"></code>
+        <p class="mt-4 text-sm text-slate-500">Tempel sebelum &lt;/body&gt; di website Anda</p>
+        <pre id="embedCode" class="mt-1 overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs text-teal-200"></pre>
+        <button id="btnCopy" class="mt-3 rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-white hover:bg-teal-dark">Salin Script</button>
+      </div>
+    </main>
+  </div>
+</section>
+
+<div id="toast" class="hide fixed bottom-5 left-1/2 -translate-x-1/2 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white shadow-lg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./app.js"></script>
+</body>
+</html>
